@@ -34,7 +34,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             pointer-events: none;
-            z-index: 0;
+            z-index: -1;
         }
 
         .snowflake {
@@ -268,8 +268,8 @@
 
         music.volume = 1.0;
 
-        const unlockDate = new Date('December 25, 2025 00:00:00').getTime();
-        //const unlockDate = new Date().getTime(); 
+        //const unlockDate = new Date('December 25, 2025 00:00:00').getTime();
+        const unlockDate = new Date().getTime(); 
 
         const timer = setInterval(() => {
             const now = new Date().getTime();
