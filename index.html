@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Merry Christmas, My Azalea</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@700&display=swap');
+
+        :root {
+            --card-width: 300px;
+            --card-height: 420px;
+            --card-red: #c72320;
+            --card-inside: #f4f1ea;
+            --bg-color: #2b2b3d; 
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at center, #3a3a52 0%, #1e1e2e 100%);
+            font-family: 'Mountains of Christmas', cursive;
+            overflow: hidden;
+            perspective: 1500px;
+        }
+
+        .snow-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -20px;
+            color: white;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-20px) rotate(0deg); }
+            100% { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        /* --- CARD CONTAINER --- */
+        .card {
+            position: relative;
+            width: var(--card-width);
+            height: var(--card-height);
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+            cursor: pointer;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .card.is-locked {
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+
+        /* --- DESKTOP ANIMATION (Open Book) --- */
+        @media (min-width: 481px) {
+            .card.is-opened {
+                transform: translateX(50%); 
+            }
+            .card.is-opened .card-front-flap {
+                transform: rotateY(-180deg);
+            }
+        }
+
+        /* --- MOBILE ANIMATION (180 Degree Flip) --- */
+        @media (max-width: 480px) {
+            :root {
+                --card-width: 85vw;
+                --card-height: 120vw;
+            }
+            
+            /* Rotate the whole card container */
+            .card {
+                transition: transform 0.8s;
+            }
+            .card.is-opened {
+                transform: rotateY(-180deg);
+            }
+
+            /* Hide the red cover when flipped */
+            .card-front-flap {
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                z-index: 2;
+            }
+
+            /* Pre-rotate the letter so it is readable when flipped */
+            .card-inside-right {
+                transform: rotateY(180deg);
+                backface-visibility: hidden;
+                -webkit-backface-visibility: hidden;
+                z-index: 1;
+            }
+        }
+
+        /* --- SHARED STYLES --- */
+        .card-inside-right {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: var(--card-inside);
+            z-index: 1; 
+            border-radius: 5px;
+            padding: 40px 30px; 
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #ddd;
+        }
+
+        .card-front-flap {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            transform-origin: left;
+            transform-style: preserve-3d;
+            transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 2;
+        }
+
+        .flap-face {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        .flap-front {
+            background-color: var(--card-red);
+            background-image: radial-gradient(circle at center, #d62925 0%, #a8100d 100%);
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 5px solid #fff;
+            z-index: 2;
+        }
+        .flap-front::before {
+            content: ''; position: absolute;
+            top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 2px dashed rgba(255,255,255,0.5); pointer-events: none;
+        }
+
+        .flap-back {
+            background-color: var(--card-inside);
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; 
+            justify-content: center; 
+            padding: 40px 30px;
+            text-align: left;
+            border-right: 1px solid #e0e0e0; 
+        }
+
+        .front-text { font-size: 3.5rem; line-height: 0.9; margin: 0; text-align: center; text-shadow: 2px 2px 0px rgba(0,0,0,0.2); }
+        .message-title { font-family: 'Mountains of Christmas', cursive; font-size: 2rem; color: var(--card-red); margin: 0 0 10px 0; }
+        .salutation { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 600; color: #333; margin-bottom: 15px; display: block; }
+        .message-body { font-family: 'Poppins', sans-serif; font-size: 0.9rem; font-weight: 300; color: #555; line-height: 1.6; margin: 0; text-align: left; }
+        .message-body p { margin: 0 0 12px 0; }
+        
+        .signature-area { margin-top: auto; text-align: right; font-family: 'Poppins', sans-serif; font-size: 0.9rem; color: #333; width: 100%; }
+        .signature-area p { margin: 2px 0; }
+        .signature-area p:first-child { color: var(--card-red); font-weight: 600; }
+
+        .lock-container { margin-top: 20px; text-align: center; font-family: 'Poppins', sans-serif; }
+        .lock-icon { font-size: 2rem; display: block; }
+        .timer-text { font-size: 1rem; opacity: 0.9; }
+        .click-hint { display: none; margin-top: 20px; font-size: 1rem; opacity: 0.8; animation: pulse 2s infinite; font-family: 'Poppins', sans-serif; }
+        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+        .bg-decor { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); font-size: 3rem; opacity: 0.05; pointer-events: none; }
+
+        .mobile-only { display: none; }
+        .desktop-only { display: block; }
+
+        @media (max-width: 480px) {
+            .mobile-only { display: block; }
+            .desktop-only { display: none; }
+            .flap-back { display: none !important; }
+            .card-inside-right { padding: 30px 25px; }
+            .front-text { font-size: 3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="snow-container"></div>
+    
+    <audio id="bgMusic" loop>
+        <source src="bgm.mp3" type="audio/mp3">
+    </audio>
+
+    <div class="card is-locked" id="card">
+        
+        <div class="card-inside-right">
+            
+            <div class="mobile-only">
+                <h2 class="message-title">Merry Christmas!</h2>
+                <span class="salutation">My Azalea,</span>
+            </div>
+
+            <div class="message-body">
+                <p class="mobile-only">I hope your holidays are as warm and bright as your heart.</p>
+                <p class="mobile-only">I’m really grateful that we met and that I get the chance to know you.</p>
+
+                <p>I hope this season brings you all the joy, peace, and rest you truly deserve.</p>
+                <p>Can’t wait to make more memories with you in the new year.</p>
+            </div>
+
+            <div class="signature-area">
+                <p>Love,</p>
+                <p>Paul</p>
+            </div>
+            <div class="bg-decor">🎄</div>
+        </div>
+
+        <div class="card-front-flap">
+            
+            <div class="flap-face flap-front">
+                <h1 class="front-text">Merry<br>Christmas</h1>
+                
+                <div class="lock-container" id="lockContainer">
+                    <span class="lock-icon">🔒</span>
+                    <div class="timer-text" id="countdown">Calculating...</div>
+                </div>
+
+                <div class="click-hint" id="clickHint">(Tap to Open)</div>
+            </div>
+
+            <div class="flap-face flap-back desktop-only">
+                <h2 class="message-title">Merry Christmas!</h2>
+                <span class="salutation">My Azalea,</span>
+                <div class="message-body">
+                    <p>I hope your holidays are as warm and bright as your heart.</p>
+                    <p>I’m really grateful that we met and that I get the chance to know you.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const card = document.getElementById('card');
+        const lockContainer = document.getElementById('lockContainer');
+        const clickHint = document.getElementById('clickHint');
+        const countdownEl = document.getElementById('countdown');
+        const music = document.getElementById('bgMusic');
+
+        music.volume = 1.0;
+
+        const unlockDate = new Date('December 25, 2025 00:00:00').getTime();
+        //const unlockDate = new Date().getTime(); 
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const distance = unlockDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                countdownEl.innerHTML = `Unlocks in<br>${days}d ${hours}h ${minutes}m ${seconds}s`;
+            } 
+            else {
+                clearInterval(timer);
+                unlockCard();
+            }
+        }, 1000);
+
+        function unlockCard() {
+            lockContainer.style.display = 'none';
+            clickHint.style.display = 'block';
+            card.classList.remove('is-locked');
+            card.addEventListener('click', toggleCard);
+        }
+
+        function toggleCard() {
+            card.classList.toggle('is-opened');
+            
+            if (music.paused) {
+                music.play().catch(e => console.log("Audio play failed (user interaction needed)"));
+            }
+        }
+
+        function createSnowflakes() {
+            const snowContainer = document.querySelector('.snow-container');
+            const numberOfFlakes = 40;
+
+            for (let i = 0; i < numberOfFlakes; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerHTML = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = Math.random() * 3 + 5 + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                snowflake.style.opacity = Math.random() * 0.6 + 0.4;
+                snowContainer.appendChild(snowflake);
+            }
+        }
+        createSnowflakes();
+    </script>
+
+</body>
+</html>
